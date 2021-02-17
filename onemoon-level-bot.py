@@ -42,7 +42,7 @@ async def on_message(message):
     if message.author.bot:
         return None
     
-    if message.content.startswith('!정보'):
+    if message.content.startswith('!일월'):
 
         Name = message.content[4:len(message.content)]
 
