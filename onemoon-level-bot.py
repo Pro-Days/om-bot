@@ -83,7 +83,7 @@ async def on_message(message):
             req = requests.get('http://om.skhidc.kr/carnivaltop.php?job='+job)  
             html = req.text
             soup = BeautifulSoup(html, 'html.parser')
-            info = message.content[4:7]+' '+job1
+            info = message.content[4:8]+' '+job1
 
         elif season >= 8:
             season = str(season1)
