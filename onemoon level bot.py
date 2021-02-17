@@ -19,6 +19,8 @@ from selenium.common.exceptions import NoSuchElementException
 
 from selenium.webdriver.chrome.options import Options
 
+import os
+
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -142,4 +144,5 @@ async def on_message(message):
     
     await message.channel.send(embed=embed)
 
-
+access_token = os.environ["BOT_TOKEN"]
+client.run(access_token)
