@@ -1,6 +1,7 @@
 import discord
 client = discord.Client()
 import requests
+import urllib.request
 from bs4 import BeautifulSoup
 import selenium
 from selenium import webdriver
@@ -30,6 +31,87 @@ driver.get("http://om.skhidc.kr/index.php")
 async def on_message(message):
     if message.author.bot:
         return None
+    
+    if message.content.startswith('!일월 괴영'):
+
+        season1 = message.content[7:8]
+
+        try:
+            season = int(season1)
+
+        except ValueError:
+            await message.channel.send('!일월 괴영 <시즌> <직업>')
+
+        else:
+            pass
+
+        finally:
+            pass
+                
+        job1 = message.content[9:len(message.content)]
+
+        if job1 == "검객":
+            job = "swordman"
+
+        elif job1 == "자객":
+            job = "assassin"
+
+        elif job1 == "궁사":
+            job = "archer"
+
+        elif job1 == "진사":
+            job = "archer"
+
+        elif job1 == "닌자":
+            job = "archer"
+
+        elif job1 == "월사":
+            job = "archer"
+
+        elif job1 == "법사":
+            job = "archer"
+
+        elif job1 == "창술사":
+            job = "archer"
+
+        else:
+            job = "swordman"
+            job1 = "검객"
+
+        if season == 7:
+            season = str(season1)
+            req = requests.get('http://om.skhidc.kr/carnivaltop.php?job='+job)  
+            html = req.text
+            soup = BeautifulSoup(html, 'html.parser')
+            info = message.content[4:7]+' '+job1
+
+        elif season >= 8:
+            season = str(season1)
+            req = requests.get('http://om.skhidc.kr/carnival_season.php?job='+job,'&season=1')  
+            html = req.text
+            soup = BeautifulSoup(html, 'html.parser')
+            info = message.content[4:7] + "1 " + job1
+                
+        else:
+            season = str(season1)
+            req = requests.get('http://om.skhidc.kr/carnival_season.php?job='+job+'&season='+season)  
+            html = req.text
+            soup = BeautifulSoup(html, 'html.parser')
+            info = message.content[4:7]+season1+' '+job1
+
+        embed=discord.Embed(title=info, color=0x00ff56)
+
+        table = soup.find('table', {'class': 'table table-bordered'})
+        trs = table.find_all('tr')
+        for idx, tr in enumerate(trs):
+            if idx > 0:
+                tds = tr.find_all('td')
+                ranking = tds[0].text.strip()
+                nickname = tds[1].text.strip()
+                score = tds[3].text.strip()
+                embed.add_field(name=ranking, value='닉네임: ' + nickname + ' | 점수: ' + score, inline=False)
+
+        await message.channel.send(embed=embed)
 
     if message.content.startswith('!일월 검색'):
 
