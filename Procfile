@@ -1,1 +1,1 @@
-worker: python onemoon level bot.py
+worker: python onemoon-level-bot.py
