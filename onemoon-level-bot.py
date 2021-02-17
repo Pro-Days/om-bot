@@ -1,71 +1,61 @@
 import discord
 client = discord.Client()
-
 import requests
 from bs4 import BeautifulSoup
-
 import selenium
 from selenium import webdriver
 from selenium.webdriver import ActionChains
-
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.common.by import By
-
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
-
 from selenium.common.exceptions import NoSuchElementException
-
 from selenium.webdriver.chrome.options import Options
-
 import os
-
 @client.event
 async def on_ready():
     print('Logged in as')
     print(client.user.name)
     print(client.user.id)
     print('------')
-
 options = webdriver.ChromeOptions()
 options.add_argument('--headless')
 options.add_argument('--window-size=1024,768')
 options.add_argument("--disable-gpu")
-
 driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
 driver.get("http://om.skhidc.kr/index.php")
     
 @client.event
 async def on_message(message):
-
     if message.author.bot:
         return None
-    
+
     if message.content.startswith('!일월 검색'):
 
         Name = message.content[6:len(message.content)]
 
+    try:
         chrome = driver.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
         if len(chrome.text) >= 1:
             
             search_box = driver.find_element_by_class_name('form-control')
-
             search_box.send_keys(Name)
-
             search_box.send_keys(Keys.RETURN)
             
         else:
             driver.get(url='http://om.skhidc.kr/')
-
             search_box = driver.find_element_by_class_name('form-control')
-
             search_box.send_keys(Name)
-
             search_box.send_keys(Keys.RETURN)
-
-        embed=discord.Embed(title=Name, color=0x00ff56)
-
+            
+    except NoSuchElementException:
+        driver.get(url='http://om.skhidc.kr/')
+        search_box = driver.find_element_by_class_name('form-control')
+        search_box.send_keys(Name)
+        search_box.send_keys(Keys.RETURN)
+    embed=discord.Embed(title=Name, color=0x00ff56)
+    try:
         elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
         if len(elem.text) >= 1:
             
@@ -75,7 +65,9 @@ async def on_message(message):
             
         else:
             embed.add_field(name="캐릭터1", value="없음", inline=True)
-
+    except NoSuchElementException:
+        embed.add_field(name="캐릭터1", value="없음", inline=True)
+    try:
         elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
         if len(elem.text) >= 1:
             
@@ -85,7 +77,9 @@ async def on_message(message):
             
         else:
             embed.add_field(name="캐릭터2", value="없음", inline=True)
-
+    except NoSuchElementException:
+        embed.add_field(name="캐릭터2", value="없음", inline=True)
+    try:
         elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
         if len(elem.text) >= 1:
             
@@ -95,7 +89,9 @@ async def on_message(message):
             
         else:
             embed.add_field(name="캐릭터3", value="없음", inline=False)
-
+    except NoSuchElementException:
+        embed.add_field(name="캐릭터3", value="없음", inline=False)
+    try:
         elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
         if len(elem.text) >= 1:
             
@@ -105,7 +101,9 @@ async def on_message(message):
             
         else:
             embed.add_field(name="캐릭터4", value="없음", inline=True)
-
+    except NoSuchElementException:
+        embed.add_field(name="캐릭터4", value="없음", inline=True)
+    try:
         elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
         if len(elem.text) >= 1:
             
@@ -115,9 +113,10 @@ async def on_message(message):
             
         else:
             embed.add_field(name="캐릭터5", value="없음", inline=True)
+    except NoSuchElementException:
+        embed.add_field(name="캐릭터5", value="없음", inline=True)
     
     
     await message.channel.send(embed=embed)
-
 access_token = os.environ['BOT_TOKEN']
 client.run(access_token)
