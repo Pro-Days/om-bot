@@ -33,7 +33,7 @@ async def on_message(message):
 
     if message.content.startswith('!일월 검색'):
 
-        Name = message.content[6:len(message.content)]
+        Name = message.content[7:len(message.content)]
 
     try:
         chrome = driver.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
