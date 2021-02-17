@@ -33,7 +33,7 @@ options.add_argument('--headless')
 options.add_argument('--window-size=1024,768')
 options.add_argument("--disable-gpu")
 
-driver = webdriver.Chrome(executable_path='chromedriver', options=options)
+driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
 driver.get("http://om.skhidc.kr/index.php")
     
 @client.event
