@@ -60,19 +60,19 @@ async def on_message(message):
             job = "archer"
 
         elif job1 == "진사":
-            job = "archer"
+            job = "jinsa"
 
         elif job1 == "닌자":
-            job = "archer"
+            job = "ninja"
 
         elif job1 == "월사":
-            job = "archer"
+            job = "axewarrier"
 
         elif job1 == "법사":
-            job = "archer"
+            job = "magician"
 
         elif job1 == "창술사":
-            job = "archer"
+            job = "spearman"
 
         else:
             job = "swordman"
