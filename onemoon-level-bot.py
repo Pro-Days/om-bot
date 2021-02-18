@@ -32,6 +32,68 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content.startswith('!일월 랭킹'):
+
+        ranking1 = message.content[7:9]
+        page1 = message.content[10:len(message.content)]
+
+        try:
+            page = int(page1)
+
+        except ValueError:
+            await message.channel.send('!일월 랭킹 <일반 / 기문 / 만렙> <페이지>')
+
+        else:
+            pass
+
+        finally:
+            pass
+
+        if (page >= 1 and page <=10):
+            page = str(page1)
+
+        else:
+            page = '1'
+
+        if ranking1 == "일반":
+            ranking = "top"
+
+        elif ranking1 == "기문":
+            ranking = "top2"
+
+        elif ranking1 == "만렙":
+            ranking = "king"
+
+        else:
+            ranking = "일반"
+            ranking = "top"
+
+        info = ranking1+'랭킹'+page
+
+        req = requests.get('http://om.skhidc.kr/level'+ranking+'.php'+'?page='+page)  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        embed=discord.Embed(title=info, color=0x00ff56)
+
+        try:
+            table = soup.find('table', {'class': 'table table-bordered'})
+            trs = table.find_all('tr')
+            for idx, tr in enumerate(trs):
+                if idx > 0:
+                    tds = tr.find_all('td')
+                    ranking = tds[0].text.strip()
+                    nickname = tds[1].text.strip()
+                    job = tds[3].text.strip()
+                    level = tds[4].text.strip()
+                    embed.add_field(name=ranking, value='닉네임: ' + nickname + ' | 직업: ' + job + ' | 레벨: ' + level, inline=False)
+                    
+        except AttributeError:
+            info = ranking1+'랭킹 '+page+' (기록없음)'
+            embed=discord.Embed(title=info, color=0x00ff56)
+
+        await message.channel.send(embed=embed)
+    
     if message.content.startswith('!일월 괴영'):
 
         season1 = message.content[7:8]
