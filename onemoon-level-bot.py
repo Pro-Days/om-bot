@@ -14,6 +14,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 import os
+import time
 @client.event
 async def on_ready():
     print('Logged in as')
@@ -38,7 +39,7 @@ async def on_message(message):
         req = requests.get('https://skhlist.com/server/79', headers=headers)  
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
-        sleep(3)
+        time.sleep(3)
 
         embed = discord.Embed(title='일월 정보', color=0x00ff56)
 
