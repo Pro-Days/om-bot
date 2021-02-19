@@ -42,6 +42,8 @@ async def on_message(message):
         time.sleep(3)
 
         embed = discord.Embed(title='일월 정보', color=0x00ff56)
+        
+        print(soup)
 
         tds = soup.find('div', {'class':'table-responsive'}).find_all('td')
 
