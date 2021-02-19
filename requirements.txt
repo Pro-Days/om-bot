@@ -2,4 +2,4 @@ discord.py
 requests
 bs4
 selenium
-urllib.request
+BeautifulSoup4
