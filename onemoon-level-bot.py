@@ -35,7 +35,7 @@ async def on_message(message):
     
     if message.content == "!일월 정보":
         
-        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/71.0.3578.98 Safari/537.36'}
+        headers = {'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.182 Safari/537.36'}
         req = requests.get('https://skhlist.com/server/79', headers=headers)  
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
