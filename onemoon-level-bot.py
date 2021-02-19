@@ -57,7 +57,7 @@ async def on_message(message):
 
         embed.add_field(name='버전', value=version, inline=True)
         embed.add_field(name='주소', value=address, inline=True)
-        embed.add_field(name='접속자수', value=users, inline=True)
+        embed.add_field(name='접속자수', value=users, inline=False)
         embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
         embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
 
@@ -88,7 +88,7 @@ async def on_message(message):
 
         embed.add_field(name='버전', value=version, inline=True)
         embed.add_field(name='주소', value=address, inline=True)
-        embed.add_field(name='접속자수', value=users, inline=True)
+        embed.add_field(name='접속자수', value=users, inline=False)
         embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
         embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
 
