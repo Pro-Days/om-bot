@@ -40,7 +40,8 @@ async def on_message(message):
 
         embed = discord.Embed(title='일월 정보', color=0x00ff56)
 
-        tds = soup.find('div', {'class':'table-responsive'}).find_all('td')
+        div = soup.find('div', {'class': 'table-responsive'})
+        tds = div.find_all('td')
 
         version = tds[0].text.strip()
         address = tds[1].text.strip()
