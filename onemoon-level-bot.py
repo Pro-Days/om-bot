@@ -32,6 +32,68 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content == "!일월 정보":
+
+        req = requests.get('https://skhlist.com/server/79')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        embed = discord.Embed(title='일월 정보', color=0x00ff56)
+
+        tds = soup.find('div', {'class':'table-responsive'}).find_all('td')
+
+        version = tds[0].text.strip()
+        address = tds[1].text.strip()
+        users = tds[3].text.strip()
+        vote_skh = tds[4].text.strip()
+
+        req = requests.get('https://minelist.kr/servers/onemoon.skhidc.kr')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        p = soup.find('div', {'class':'col-md-12 server-info bottom container-fluid'}).find_all('p')
+
+        vote_mine = p[0].text.strip()
+
+        embed.add_field(name='버전', value=version, inline=True)
+        embed.add_field(name='주소', value=address, inline=True)
+        embed.add_field(name='접속자수', value=users, inline=True)
+        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
+        embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
+
+        await message.channel.send(embed=embed)
+
+    if message.content == "!귀검 정보":
+
+        req = requests.get('https://skhlist.com/server/324')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        embed = discord.Embed(title='귀검 정보', color=0x00ff56)
+
+        tds = soup.find('div', {'class':'table-responsive'}).find_all('td')
+
+        version = tds[0].text.strip()
+        address = tds[1].text.strip()
+        users = tds[3].text.strip()
+        vote_skh = tds[4].text.strip()
+
+        req = requests.get('https://minelist.kr/servers/gss.skhidc.kr')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        p = soup.find('div', {'class':'col-md-12 server-info bottom container-fluid'}).find_all('p')
+
+        vote_mine = p[0].text.strip()
+
+        embed.add_field(name='버전', value=version, inline=True)
+        embed.add_field(name='주소', value=address, inline=True)
+        embed.add_field(name='접속자수', value=users, inline=True)
+        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
+        embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
+
+        await message.channel.send(embed=embed)
+    
     if message.content.startswith('!일월 랭킹'):
 
         ranking1 = message.content[7:9]
