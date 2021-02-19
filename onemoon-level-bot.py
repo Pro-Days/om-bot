@@ -35,6 +35,7 @@ async def on_message(message):
     if message.content == "!일월 정보":
 
         req = requests.get('https://skhlist.com/server/79')  
+        print(req.content.decode('utf-8))
         html = req.text
         soup = BeautifulSoup(html, 'html.parser')
 
