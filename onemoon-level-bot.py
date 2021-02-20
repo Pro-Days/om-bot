@@ -197,7 +197,6 @@ async def on_message(message):
             search_box.send_keys(Keys.RETURN)
             
     except NoSuchElementException:
-        global driver
         driver.get(url='http://om.skhidc.kr/')
         search_box = driver.find_element_by_class_name('form-control')
         search_box.send_keys(Name)
