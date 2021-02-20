@@ -27,84 +27,11 @@ async def on_ready():
     options.add_argument("--disable-gpu")
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
     driver.get("http://om.skhidc.kr/index.php")
-    global driver_so
-    global driver_sg
-    global driver_mo
-    global driver_mg
-    driver_so = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_sg = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_mo = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_mg = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_so.get(url='https://skhlist.com/server/79')
-    driver_sg.get(url='https://skhlist.com/server/324')
-    driver_mo.get(url='https://minelist.kr/servers/onemoon.skhidc.kr')
-    driver_mg.get(url='https://minelist.kr/servers/gss.skhidc.kr')
     
 @client.event
 async def on_message(message):
     if message.author.bot:
         return None
-    
-    if message.content == "!일월 정보":
-
-        embed=discord.Embed(title='일월 정보', color=0x00ff56)
-
-        global driver_so
-        global driver_mo
-
-        driver_so.refresh()
-        driver_mo.refresh()
-
-        version1 = driver_so.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]')
-        version = version1.text
-        address1 = driver_so.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[2]')
-        address = address1.text
-        users1 = driver_so.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]')
-        users = users1.text
-        vote_skh1 = driver_so.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]')
-        vote_skh = vote_skh1.text
-
-        vote_mine1 = driver_mo.find_element_by_xpath('/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]')
-        vote_mine = vote_mine1.text
-
-        embed.add_field(name='버전', value=version, inline=True)
-        embed.add_field(name='주소', value=address, inline=True)
-        embed.add_field(name='접속자수', value=users, inline=False)
-        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
-        embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
-
-        await message.channel.send(embed=embed)
-
-    if message.content == "!귀검 정보":
-
-        req = requests.get('https://skhlist.com/server/324')  
-        html = req.text
-        soup = BeautifulSoup(html, 'html.parser')
-
-        embed = discord.Embed(title='귀검 정보', color=0x00ff56)
-
-        tds = soup.find('div', {'class':'table-responsive'}).find_all('td')
-
-        version = tds[0].text.strip()
-        address = tds[1].text.strip()
-        users = tds[3].text.strip()
-        vote_skh = tds[4].text.strip()
-
-        req = requests.get('https://minelist.kr/servers/gss.skhidc.kr')  
-        html = req.text
-        soup = BeautifulSoup(html, 'html.parser')
-
-        p = soup.find('div', {'class':'col-md-12 server-info bottom container-fluid'}).find_all('p')
-
-        vote_mine = p[0].text.strip()
-
-        embed.add_field(name='버전', value=version, inline=True)
-        embed.add_field(name='주소', value=address, inline=True)
-        embed.add_field(name='접속자수', value=users, inline=False)
-        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
-        embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
-
-        await message.channel.send(embed=embed)
     
     if message.content.startswith('!일월 랭킹'):
 
