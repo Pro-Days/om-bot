@@ -24,27 +24,15 @@ async def on_ready():
     print(client.user.id)
     print('------')
     options = webdriver.ChromeOptions()
+    options.add_argument('headless')
     options.add_argument('--window-size=1024,768')
     options.add_argument("--disable-gpu")
     global driver
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
     driver.get('https://onemoon.skhidc.kr')
-    
-    global driver_om
-    driver_om = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_om.execute_script('window.open("about:blank", "_blank");')
 
     global tabs
     tabs = driver.window_handles
-
-    global tabs_om
-    tabs_om = driver_om.window_handles
-
-    driver_om.switch_to_window(tabs_om[0])
-    driver_om.get('https://skhlist.com/server/79')
-
-    driver_om.switch_to_window(tabs_om[1])
-    driver_om.get('https://minelist.kr/servers/onemoon.skhidc.kr')
 
     print('ready')
     
@@ -55,32 +43,47 @@ async def on_message(message):
     
     if message.content == "!일월 정보":
 
+        req = requests.get('https://minelist.kr/servers/onemoon.skhidc.kr')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        div1 = soup.find('div', {'class': 'col-md-6 col-sm-6'})
+        p1 = div1.find('p')
+        users = p1.text.strip()
+
+        div2 = soup.find('div', {'class': 'col-md-4 col-xs-4'})
+        p2 = div2.find('p')
+        vote_mine = p2.text.strip()
+
         embed=discord.Embed(title='일월 정보', color=0x00ff56)
-
-        global driver_om
-        global tabs_om
-
-        driver_om.switch_to_window(tabs_om[0])
-
-        driver_om.refresh()
-
-        users1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]")
-        users = users1.text
-        vote_skh1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]")
-        vote_skh = vote_skh1.text
-
-        driver_om.switch_to_window(tabs_om[1])
-
-        driver_om.refresh()
-
-        vote_mine1 = driver_om.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]")
-        vote_mine = vote_mine1.text
 
         embed.add_field(name='버전', value='1.12.2', inline=True)
         embed.add_field(name='주소', value='onemoon.skhidc.kr', inline=True)
         embed.add_field(name='접속자수', value=users, inline=False)
         embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
-        embed.add_field(name='SKH리스트 추천수', value=vote_skh, inline=True)
+
+        await message.channel.send(embed=embed)
+
+    if message.content == "!귀검 정보":
+
+        req = requests.get('https://minelist.kr/servers/gss.skhidc.kr')  
+        html = req.text
+        soup = BeautifulSoup(html, 'html.parser')
+
+        div1 = soup.find('div', {'class': 'col-md-6 col-sm-6'})
+        p1 = div1.find('p')
+        users = p1.text.strip()
+
+        div2 = soup.find('div', {'class': 'col-md-4 col-xs-4'})
+        p2 = div2.find('p')
+        vote_mine = p2.text.strip()
+
+        embed=discord.Embed(title='귀검 정보', color=0x00ff56)
+
+        embed.add_field(name='버전', value='1.15.2', inline=True)
+        embed.add_field(name='주소', value='gss.skhidc.kr', inline=True)
+        embed.add_field(name='접속자수', value=users, inline=False)
+        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
 
         await message.channel.send(embed=embed)
     
