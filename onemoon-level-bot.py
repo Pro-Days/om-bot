@@ -41,6 +41,22 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content == "!일월 후원":
+
+        embed=discord.Embed(title='', color=0x00ff56)
+
+        embed.add_field(name='일월 후원링크', value="[후원링크](https://skhcs.com/onemoon)", inline=False)
+
+        await message.channel.send(embed=embed)
+
+    if message.content == "!귀검 후원":
+
+        embed=discord.Embed(title='', color=0x00ff56)
+
+        embed.add_field(name='귀검 후원링크', value="[후원링크](https://skhcs.com/gss)", inline=False)
+
+        await message.channel.send(embed=embed)
+    
     if message.content == "!일월 추천":
 
         embed=discord.Embed(title='일월 추천링크', color=0x00ff56)
