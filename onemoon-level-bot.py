@@ -28,28 +28,23 @@ async def on_ready():
     options.add_argument("--disable-gpu")
     global driver
     driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-    driver.execute_script('window.open("about:blank", "_blank");')
-    driver.execute_script('window.open("about:blank", "_blank");')
-    driver.execute_script('window.open("about:blank", "_blank");')
-    driver.execute_script('window.open("about:blank", "_blank");')
+    driver.get('https://onemoon.skhidc.kr')
+    
+    global driver_om
+    driver_om = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    driver_om.execute_script('window.open("about:blank", "_blank");')
 
     global tabs
     tabs = driver.window_handles
 
-    driver.switch_to_window(tabs[0])
-    driver.get('http://om.skhidc.kr/index.php')
+    global tabs_om
+    tabs_om = driver_om.window_handles
 
-    driver.switch_to_window(tabs[1])
-    driver.get('https://skhlist.com/server/79')
+    driver_om.switch_to_window(tabs_om[0])
+    driver_om.get('https://skhlist.com/server/79')
 
-    driver.switch_to_window(tabs[2])
-    driver.get('https://skhlist.com/server/324')
-
-    driver.switch_to_window(tabs[3])
-    driver.get('https://minelist.kr/servers/onemoon.skhidc.kr')
-
-    driver.switch_to_window(tabs[4])
-    driver.get('https://minelist.kr/servers/gss.skhidc.kr')
+    driver_om.switch_to_window(tabs_om[1])
+    driver_om.get('https://minelist.kr/servers/onemoon.skhidc.kr')
 
     print('ready')
     
@@ -62,27 +57,27 @@ async def on_message(message):
 
         embed=discord.Embed(title='일월 정보', color=0x00ff56)
 
-        global driver
-        global tabs
+        global driver_om
+        global tabs_om
 
-        driver.switch_to_window(tabs[1])
+        driver_om.switch_to_window(tabs_om[0])
 
-        driver.refresh()
+        driver_om.refresh()
 
-        version1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]")
+        version1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]")
         version = version1.text
-        address1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[2]")
+        address1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[2]")
         address = address1.text
-        users1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]")
+        users1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]")
         users = users1.text
-        vote_skh1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]")
+        vote_skh1 = driver_om.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]")
         vote_skh = vote_skh1.text
 
-        driver.switch_to_window(tabs[3])
+        driver_om.switch_to_window(tabs_om[1])
 
-        driver.refresh()
+        driver_om.refresh()
 
-        vote_mine1 = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]")
+        vote_mine1 = driver_om.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]")
         vote_mine = vote_mine1.text
 
         embed.add_field(name='버전', value=version, inline=True)
@@ -239,9 +234,10 @@ async def on_message(message):
     if message.content.startswith('!일월 검색'):
 
         Name = message.content[7:len(message.content)]
-        
+
         global driver
         global tabs
+
         driver.switch_to_window(tabs[0])
 
         try:
