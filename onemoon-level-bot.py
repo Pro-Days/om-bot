@@ -54,16 +54,16 @@ async def on_message(message):
         global driver_so
         global driver_mo
 
-        version1 = driver_so.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]")
+        version1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(1) > tbody > tr > td:nth-child(1)")
         version = version1.text
-        address1 = driver_so.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[2]")
+        address1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(1) > tbody > tr > td:nth-child(2)")
         address = address1.text
-        users1 = driver_so.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]")
+        users1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(2) > tbody > tr > td:nth-child(2)")
         users = users1.text
-        vote_skh1 = driver_so.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]")
+        vote_skh1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(2) > tbody > tr > td:nth-child(3)")
         vote_skh = vote_skh1.text
 
-        vote_mine1 = driver_mo.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]")
+        vote_mine1 = driver_mo.find_element_by_css_selector("body > div.container.wrap.ml-content > div.row > div > div.col-md-12.server-info.bottom.container-fluid > div:nth-child(1) > p.no-y")
         vote_mine = vote_mine1.text
 
         embed.add_field(name='버전', value=version, inline=True)
