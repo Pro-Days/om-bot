@@ -4,6 +4,7 @@ import requests
 import urllib.request
 from bs4 import BeautifulSoup
 import selenium
+import selenium.webdriver.support.ui as ui
 from selenium import webdriver
 from selenium.webdriver import ActionChains
 from selenium.webdriver.common.keys import Keys
@@ -13,6 +14,7 @@ from selenium.webdriver.support.ui import Select
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.remote.webelement import WebElement
 import os
 import time
 @client.event
@@ -22,21 +24,33 @@ async def on_ready():
     print(client.user.id)
     print('------')
     options = webdriver.ChromeOptions()
-    options.add_argument('--headless')
     options.add_argument('--window-size=1024,768')
     options.add_argument("--disable-gpu")
-    global driver_search
-    driver_search = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_search.get("http://om.skhidc.kr/index.php")
-    global driver_so
-    global driver_sg
-    global driver_mo
-    driver_so = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_sg = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_mo = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver_so.get(url='https://skhlist.com/server/79')
-    driver_sg.get(url='https://skhlist.com/server/324')
-    driver_mo.get(url='https://minelist.kr/servers/onemoon.skhidc.kr')
+    global driver
+    driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    driver.execute_script('window.open("about:blank", "_blank");')
+    driver.execute_script('window.open("about:blank", "_blank");')
+    driver.execute_script('window.open("about:blank", "_blank");')
+    driver.execute_script('window.open("about:blank", "_blank");')
+
+    global tabs
+    tabs = driver.window_handles
+
+    driver.switch_to_window(tabs[0])
+    driver.get('http://om.skhidc.kr/index.php')
+
+    driver.switch_to_window(tabs[1])
+    driver.get('https://skhlist.com/server/79')
+
+    driver.switch_to_window(tabs[2])
+    driver.get('https://skhlist.com/server/324')
+
+    driver.switch_to_window(tabs[3])
+    driver.get('https://minelist.kr/servers/onemoon.skhidc.kr')
+
+    driver.switch_to_window(tabs[4])
+    driver.get('https://minelist.kr/servers/gss.skhidc.kr')
+
     print('ready')
     
 @client.event
@@ -48,20 +62,30 @@ async def on_message(message):
 
         embed=discord.Embed(title='일월 정보', color=0x00ff56)
 
-        global driver_so
-        global driver_mo
+        global driver
+        global tabs
 
-        address1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(1) > tbody > tr > td:nth-child(2)")
+        driver.switch_to_window(tabs[1])
+
+        driver.refresh()
+
+        version1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]")
+        version = version1.text
+        address1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[2]")
         address = address1.text
-        users1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(2) > tbody > tr > td:nth-child(2)")
+        users1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]")
         users = users1.text
-        vote_skh1 = driver_so.find_element_by_css_selector("body > div.container-fluid > section > div:nth-child(2) > div > div.col-lg-9.col-md-9 > div:nth-child(2) > div.posttext.pull-left > div.table-responsive > table:nth-child(2) > tbody > tr > td:nth-child(3)")
+        vote_skh1 = driver.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]")
         vote_skh = vote_skh1.text
 
-        vote_mine1 = driver_mo.find_element_by_css_selector("body > div.container.wrap.ml-content > div.row > div > div.col-md-12.server-info.bottom.container-fluid > div:nth-child(1) > p.no-y")
+        driver.switch_to_window(tabs[3])
+
+        driver.refresh()
+
+        vote_mine1 = driver.find_element_by_xpath("/html/body/div[1]/div[2]/div/div[3]/div[1]/p[1]")
         vote_mine = vote_mine1.text
 
-        embed.add_field(name='버전', value='1.12.2', inline=True)
+        embed.add_field(name='버전', value=version, inline=True)
         embed.add_field(name='주소', value=address, inline=True)
         embed.add_field(name='접속자수', value=users, inline=False)
         embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
@@ -216,89 +240,88 @@ async def on_message(message):
 
         Name = message.content[7:len(message.content)]
 
-    try:
-        global driver_search
-        chrome = driver_search.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
-        if len(chrome.text) >= 1:
-            
-            search_box = driver_search.find_element_by_class_name('form-control')
+        driver.switch_to_window(tabs[0])
+
+        try:
+            chrome = driver.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
+            if len(chrome.text) >= 1:
+
+                search_box = driver.find_element_by_class_name('form-control')
+                search_box.send_keys(Name)
+                search_box.send_keys(Keys.RETURN)
+
+            else:
+                search_box = driver.find_element_by_class_name('form-control')
+                search_box.send_keys(Name)
+                search_box.send_keys(Keys.RETURN)
+
+        except NoSuchElementException:
+            search_box = driver.find_element_by_class_name('form-control')
             search_box.send_keys(Name)
             search_box.send_keys(Keys.RETURN)
-            
-        else:
-            driver_search.get(url='http://om.skhidc.kr/')
-            search_box = driver_search.find_element_by_class_name('form-control')
-            search_box.send_keys(Name)
-            search_box.send_keys(Keys.RETURN)
-            
-    except NoSuchElementException:
-        driver_search.get(url='http://om.skhidc.kr/')
-        search_box = driver_search.find_element_by_class_name('form-control')
-        search_box.send_keys(Name)
-        search_box.send_keys(Keys.RETURN)
-    embed=discord.Embed(title=Name, color=0x00ff56)
-    try:
-        elem = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
-        if len(elem.text) >= 1:
-            
-            card1 = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
-            card1_data = card1.text
-            embed.add_field(name="캐릭터1", value=card1_data, inline=True)
-            
-        else:
+        embed=discord.Embed(title=Name, color=0x00ff56)
+        try:
+            elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
+                card1_data = card1.text
+                embed.add_field(name="캐릭터1", value=card1_data, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터1", value="없음", inline=True)
+        except NoSuchElementException:
             embed.add_field(name="캐릭터1", value="없음", inline=True)
-    except NoSuchElementException:
-        embed.add_field(name="캐릭터1", value="없음", inline=True)
-    try:
-        elem = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
-        if len(elem.text) >= 1:
-            
-            card2 = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
-            card2_data = card2.text
-            embed.add_field(name="캐릭터2", value=card2_data, inline=True)
-            
-        else:
+        try:
+            elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
+            if len(elem.text) >= 1:
+
+                card2 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
+                card2_data = card2.text
+                embed.add_field(name="캐릭터2", value=card2_data, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터2", value="없음", inline=True)
+        except NoSuchElementException:
             embed.add_field(name="캐릭터2", value="없음", inline=True)
-    except NoSuchElementException:
-        embed.add_field(name="캐릭터2", value="없음", inline=True)
-    try:
-        elem = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
-        if len(elem.text) >= 1:
-            
-            card3 = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
-            card3_data = card3.text
-            embed.add_field(name="캐릭터3", value=card3_data, inline=False)
-            
-        else:
+        try:
+            elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
+            if len(elem.text) >= 1:
+
+                card3 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
+                card3_data = card3.text
+                embed.add_field(name="캐릭터3", value=card3_data, inline=False)
+
+            else:
+                embed.add_field(name="캐릭터3", value="없음", inline=False)
+        except NoSuchElementException:
             embed.add_field(name="캐릭터3", value="없음", inline=False)
-    except NoSuchElementException:
-        embed.add_field(name="캐릭터3", value="없음", inline=False)
-    try:
-        elem = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
-        if len(elem.text) >= 1:
-            
-            card4 = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
-            card4_data = card4.text
-            embed.add_field(name="캐릭터4", value=card4_data, inline=True)
-            
-        else:
+        try:
+            elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
+            if len(elem.text) >= 1:
+
+                card4 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
+                card4_data = card4.text
+                embed.add_field(name="캐릭터4", value=card4_data, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터4", value="없음", inline=True)
+        except NoSuchElementException:
             embed.add_field(name="캐릭터4", value="없음", inline=True)
-    except NoSuchElementException:
-        embed.add_field(name="캐릭터4", value="없음", inline=True)
-    try:
-        elem = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
-        if len(elem.text) >= 1:
-            
-            card5 = driver_search.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
-            card5_data = card5.text
-            embed.add_field(name="캐릭터5", value=card5_data, inline=True)
-            
-        else:
+        try:
+            elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
+            if len(elem.text) >= 1:
+
+                card5 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
+                card5_data = card5.text
+                embed.add_field(name="캐릭터5", value=card5_data, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터5", value="없음", inline=True)
+        except NoSuchElementException:
             embed.add_field(name="캐릭터5", value="없음", inline=True)
-    except NoSuchElementException:
-        embed.add_field(name="캐릭터5", value="없음", inline=True)
-    
-    
-    await message.channel.send(embed=embed)
+
+
+        await message.channel.send(embed=embed)
 access_token = os.environ['BOT_TOKEN']
 client.run(access_token)
