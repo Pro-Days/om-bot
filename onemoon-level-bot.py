@@ -41,6 +41,14 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content == "!일월 사이트":
+
+        embed=discord.Embed(title='', color=0x00ff56)
+
+        embed.add_field(name='일월 사이트', value="[사이트](https://onemoon.skhidc.kr)", inline=False)
+
+        await message.channel.send(embed=embed)
+    
     if message.content == "!일월 후원":
 
         embed=discord.Embed(title='', color=0x00ff56)
