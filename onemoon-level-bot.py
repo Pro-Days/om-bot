@@ -40,6 +40,7 @@ async def on_ready():
     driver_sg.get(url='https://skhlist.com/server/324')
     driver_mo.get(url='https://minelist.kr/servers/onemoon.skhidc.kr')
     driver_mg.get(url='https://minelist.kr/servers/gss.skhidc.kr')
+    print('ready')
     
 @client.event
 async def on_message(message):
@@ -52,9 +53,6 @@ async def on_message(message):
 
         global driver_so
         global driver_mo
-
-        driver_so.refresh()
-        driver_mo.refresh()
 
         version1 = driver_so.find_element_by_xpath("/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[1]/tbody/tr/td[1]")
         version = version1.text
