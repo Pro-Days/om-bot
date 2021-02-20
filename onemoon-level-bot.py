@@ -32,10 +32,10 @@ async def on_ready():
     global driver_sg
     global driver_mo
     global driver_mg
-    driver_so = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-    driver_sg = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-    driver_mo = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
-    driver_mg = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    driver_so = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
+    driver_sg = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
+    driver_mo = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
+    driver_mg = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
     driver_so.get(url='https://skhlist.com/server/79')
     driver_sg.get(url='https://skhlist.com/server/324')
     driver_mo.get(url='https://minelist.kr/servers/onemoon.skhidc.kr')
