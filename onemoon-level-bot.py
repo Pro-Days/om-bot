@@ -41,6 +41,24 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content == "!일월 추천":
+
+        embed=discord.Embed(title='일월 추천링크', color=0x00ff56)
+
+        embed.add_field(name='마인리스트', value="[마인리스트 링크](https://minelist.kr/servers/onemoon.skhidc.kr)", inline=False)
+        embed.add_field(name='SKH리스트', value="[SKH리스트 링크](https://skhlist.com/server/79)", inline=False)
+
+        await message.channel.send(embed=embed)
+
+    if message.content == "!귀검 추천":
+
+        embed=discord.Embed(title='귀검 추천링크', color=0x00ff56)
+
+        embed.add_field(name='마인리스트', value="[마인리스트 링크](https://minelist.kr/servers/gss.skhidc.kr)", inline=False)
+        embed.add_field(name='SKH리스트', value="[SKH리스트 링크](https://skhlist.com/server/324)", inline=False)
+
+        await message.channel.send(embed=embed)
+    
     if message.content == "!일월 정보":
 
         req = requests.get('https://minelist.kr/servers/onemoon.skhidc.kr')  
