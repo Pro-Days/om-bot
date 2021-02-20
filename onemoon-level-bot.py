@@ -45,7 +45,7 @@ async def on_message(message):
 
         embed=discord.Embed(title='', color=0x00ff56)
 
-        embed.add_field(name='일월 사이트', value="[사이트](https://onemoon.skhidc.kr)", inline=False)
+        embed.add_field(name='일월 사이트', value="[사이트](https://onemoon.skhidc.kr)", inline=True)
 
         await message.channel.send(embed=embed)
     
