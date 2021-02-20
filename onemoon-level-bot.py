@@ -239,7 +239,9 @@ async def on_message(message):
     if message.content.startswith('!일월 검색'):
 
         Name = message.content[7:len(message.content)]
-
+        
+        global driver
+        global tabs
         driver.switch_to_window(tabs[0])
 
         try:
