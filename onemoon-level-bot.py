@@ -306,6 +306,7 @@ async def on_message(message):
                 card1 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
                 card1_data = card1.text
                 embed.add_field(name="캐릭터1", value=card1_data, inline=True)
+                embed.set_image(url=f"https://minotar.net/avatar/{Name}/100.png")
 
             else:
                 embed.add_field(name="캐릭터1", value="없음", inline=True)
@@ -318,6 +319,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[2]/div')
                 card2_data = card2.text
                 embed.add_field(name="캐릭터2", value=card2_data, inline=True)
+                embed.set_image(url=f"https://minotar.net/avatar/{Name}/100.png")
 
             else:
                 embed.add_field(name="캐릭터2", value="없음", inline=True)
@@ -330,6 +332,7 @@ async def on_message(message):
                 card3 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[3]/div')
                 card3_data = card3.text
                 embed.add_field(name="캐릭터3", value=card3_data, inline=False)
+                embed.set_image(url=f"https://minotar.net/avatar/{Name}/100.png")
 
             else:
                 embed.add_field(name="캐릭터3", value="없음", inline=False)
@@ -342,6 +345,7 @@ async def on_message(message):
                 card4 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[4]/div')
                 card4_data = card4.text
                 embed.add_field(name="캐릭터4", value=card4_data, inline=True)
+                embed.set_image(url=f"https://minotar.net/avatar/{Name}/100.png")
 
             else:
                 embed.add_field(name="캐릭터4", value="없음", inline=True)
@@ -354,6 +358,7 @@ async def on_message(message):
                 card5 = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[5]/div')
                 card5_data = card5.text
                 embed.add_field(name="캐릭터5", value=card5_data, inline=True)
+                embed.set_image(url=f"https://minotar.net/avatar/{Name}/100.png")
 
             else:
                 embed.add_field(name="캐릭터5", value="없음", inline=True)
