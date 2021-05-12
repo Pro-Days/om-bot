@@ -29,7 +29,7 @@ async def on_ready():
     options.add_argument("--disable-gpu")
     global driver
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver.get('https://onemoon.skhidc.kr')
+    driver.get('http://om.skhidc.kr/')
 
     global tabs
     tabs = driver.window_handles
