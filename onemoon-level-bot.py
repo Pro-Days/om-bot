@@ -25,7 +25,7 @@ async def on_ready():
     options.add_argument("--disable-gpu")
     global driver
     
-    driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
     driver.execute_script('window.open("about:blank", "_blank");')
     driver.execute_script('window.open("about:blank", "_blank");')
 
