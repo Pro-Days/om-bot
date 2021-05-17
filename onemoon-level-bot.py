@@ -19,20 +19,27 @@ import os
 import time
 @client.event
 async def on_ready():
-    print('Logged in as')
-    print(client.user.name)
-    print(client.user.id)
-    print('------')
     options = webdriver.ChromeOptions()
     options.add_argument('headless')
     options.add_argument('--window-size=1024,768')
     options.add_argument("--disable-gpu")
     global driver
-    driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver.get('http://om.skhidc.kr/')
+    
+    driver = webdriver.Chrome(executable_path='chromedriver.exe', options=options)
+    driver.execute_script('window.open("about:blank", "_blank");')
+    driver.execute_script('window.open("about:blank", "_blank");')
 
     global tabs
     tabs = driver.window_handles
+
+    driver.switch_to_window(tabs[0])
+    driver.get('http://om.skhidc.kr/')
+
+    driver.switch_to_window(tabs[1])
+    driver.get('https://skhlist.com/server/324')
+    
+    driver.switch_to_window(tabs[2])
+    driver.get('https://skhlist.com/server/79')
 
     print('ready')
     
@@ -83,49 +90,40 @@ async def on_message(message):
 
         await message.channel.send(embed=embed)
     
-    if message.content == "!일월 정보":
+    if message.content == "!귀검 정보":
 
-        req = requests.get('https://minelist.kr/servers/onemoon.skhidc.kr')  
-        html = req.text
-        soup = BeautifulSoup(html, 'html.parser')
+        embed=discord.Embed(title='정보', color=0x00ff56)
 
-        div1 = soup.find('div', {'class': 'col-md-6 col-sm-6'})
-        p1 = div1.find('p')
-        users = p1.text.strip()
+        driver.switch_to_window(tabs[1])
+        driver.refresh()
 
-        div2 = soup.find('div', {'class': 'col-md-4 col-xs-4'})
-        p2 = div2.find('p')
-        vote_mine = p2.text.strip()
+        embed.add_field(name="이름", value='귀검', inline=True)
+        embed.add_field(name="버전", value='1.15.2', inline=True)
+        
+        users = driver.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]')
+        users_data = users.text
+        embed.add_field(name="접속자수(SKH리스트 기준)", value=users_data, inline=True)
 
-        embed=discord.Embed(title='일월 정보', color=0x00ff56)
+        votes = driver.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]')
+        votes_data = votes.text
+        embed.add_field(name="추천수(SKH리스트 기준)", value=votes_data, inline=True)
 
-        embed.add_field(name='버전', value='1.12.2', inline=True)
-        embed.add_field(name='주소', value='onemoon.skhidc.kr', inline=True)
-        embed.add_field(name='접속자수', value=users, inline=False)
-        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
 
         await message.channel.send(embed=embed)
 
-    if message.content == "!귀검 정보":
+    if message.content == "!일월 정보":
 
-        req = requests.get('https://minelist.kr/servers/gss.skhidc.kr')  
-        html = req.text
-        soup = BeautifulSoup(html, 'html.parser')
+        embed=discord.Embed(title='정보', color=0x00ff56)
 
-        div1 = soup.find('div', {'class': 'col-md-6 col-sm-6'})
-        p1 = div1.find('p')
-        users = p1.text.strip()
+        driver.switch_to_window(tabs[2])
+        driver.refresh()
 
-        div2 = soup.find('div', {'class': 'col-md-4 col-xs-4'})
-        p2 = div2.find('p')
-        vote_mine = p2.text.strip()
-
-        embed=discord.Embed(title='귀검 정보', color=0x00ff56)
-
-        embed.add_field(name='버전', value='1.15.2', inline=True)
-        embed.add_field(name='주소', value='gss.skhidc.kr', inline=True)
-        embed.add_field(name='접속자수', value=users, inline=False)
-        embed.add_field(name='마인리스트 추천수', value=vote_mine, inline=True)
+        embed.add_field(name="이름", value='일월', inline=True)
+        embed.add_field(name="버전", value='1.12.2', inline=True)
+        
+        users = driver.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]')
+        users_data = users.text
+        embed.add_field(name="접속자수(SKH리스트 기준)", value=users_data, inline=True)
 
         await message.channel.send(embed=embed)
     
