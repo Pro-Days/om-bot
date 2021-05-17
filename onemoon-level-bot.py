@@ -92,6 +92,8 @@ async def on_message(message):
     
     if message.content == "!귀검 정보":
 
+        msg = await message.channel.send('잠시만 기다려주세요')
+
         embed=discord.Embed(title='정보', color=0x00ff56)
 
         driver.switch_to_window(tabs[1])
@@ -107,11 +109,14 @@ async def on_message(message):
         votes = driver.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[3]')
         votes_data = votes.text
         embed.add_field(name="추천수(SKH리스트 기준)", value=votes_data, inline=True)
-
+        
+        await msg.delete()
 
         await message.channel.send(embed=embed)
 
     if message.content == "!일월 정보":
+
+        msg = await message.channel.send('잠시만 기다려주세요')
 
         embed=discord.Embed(title='정보', color=0x00ff56)
 
@@ -124,6 +129,8 @@ async def on_message(message):
         users = driver.find_element_by_xpath('/html/body/div[1]/section/div[2]/div/div[1]/div[1]/div[1]/div[2]/table[2]/tbody/tr/td[2]')
         users_data = users.text
         embed.add_field(name="접속자수(SKH리스트 기준)", value=users_data, inline=True)
+
+        await msg.delete()
 
         await message.channel.send(embed=embed)
     
@@ -274,9 +281,6 @@ async def on_message(message):
 
         Name = message.content[7:len(message.content)]
 
-        global driver
-        global tabs
-
         driver.switch_to_window(tabs[0])
 
         try:
@@ -365,5 +369,6 @@ async def on_message(message):
 
 
         await message.channel.send(embed=embed)
+
 access_token = os.environ['BOT_TOKEN']
 client.run(access_token)
