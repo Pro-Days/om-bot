@@ -48,6 +48,10 @@ async def on_message(message):
     if message.author.bot:
         return None
     
+    if message.content == "멍멍":
+
+        msg = await message.channel.send('됒됒')
+    
     if message.content == "!일월 사이트":
 
         embed=discord.Embed(title='', color=0x00ff56)
