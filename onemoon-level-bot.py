@@ -51,6 +51,10 @@ async def on_message(message):
     if message.content == "멍멍":
 
         msg = await message.channel.send('됒됒')
+       
+    if message.content == "색코드":
+
+        msg = await message.channel.send('https://mblogthumb-phinf.pstatic.net/MjAxNzAxMjRfNDEg/MDAxNDg1MjMyNzM5MTYy.3m4Ph0pwcOTNjhS_BQe1izZ5esI6-3aNsvd7WHJ5isYg.W0LvACeDnU3xUoOzvbt8YzF3lsvbtN2t43XUdrZyBt8g.PNG.kioplmnbv147/BBF6B1F2.png?type=w800')
     
     if message.content == "!일월 사이트":
 
