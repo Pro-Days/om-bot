@@ -33,16 +33,16 @@ async def on_ready():
     global tabs
     tabs = driver.window_handles
 
-    driver.switch_to_window(tabs[0])
+    driver.switch_to.window(tabs[0])
     driver.get('http://om.skhidc.kr/')
 
-    driver.switch_to_window(tabs[1])
+    driver.switch_to.window(tabs[1])
     driver.get('https://skhlist.com/server/324')
     
-    driver.switch_to_window(tabs[2])
+    driver.switch_to.window(tabs[2])
     driver.get('https://skhlist.com/server/79')
     
-    driver.switch_to_window(tabs[3])
+    driver.switch_to.window(tabs[3])
     driver.get('http://gss.skhidc.kr/ranking.php')
 
     print('ready')
@@ -109,7 +109,7 @@ async def on_message(message):
 
         embed=discord.Embed(title='정보', color=0x00ff56)
 
-        driver.switch_to_window(tabs[1])
+        driver.switch_to.window(tabs[1])
         driver.refresh()
 
         embed.add_field(name="이름", value='귀검', inline=True)
@@ -133,7 +133,7 @@ async def on_message(message):
 
         embed=discord.Embed(title='정보', color=0x00ff56)
 
-        driver.switch_to_window(tabs[2])
+        driver.switch_to.window(tabs[2])
         driver.refresh()
 
         embed.add_field(name="이름", value='일월', inline=True)
@@ -294,7 +294,7 @@ async def on_message(message):
 
         Name = message.content[7:len(message.content)]
 
-        driver.switch_to_window(tabs[0])
+        driver.switch_to.window(tabs[0])
 
         try:
             chrome = driver.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
@@ -389,7 +389,7 @@ async def on_message(message):
 
         Name = msg[2]
 
-        driver.switch_to_window(tabs[3])
+        driver.switch_to.window(tabs[3])
         driver.get('http://gss.skhidc.kr/ranking.php')
         
         search_box = driver.find_element_by_class_name('form-control')
