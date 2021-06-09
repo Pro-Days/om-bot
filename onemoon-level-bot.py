@@ -28,6 +28,7 @@ async def on_ready():
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
     driver.execute_script('window.open("about:blank", "_blank");')
     driver.execute_script('window.open("about:blank", "_blank");')
+    driver.execute_script('window.open("about:blank", "_blank");')
 
     global tabs
     tabs = driver.window_handles
@@ -40,6 +41,9 @@ async def on_ready():
     
     driver.switch_to_window(tabs[2])
     driver.get('https://skhlist.com/server/79')
+    
+    driver.switch_to_window(tabs[3])
+    driver.get('http://gss.skhidc.kr/ranking.php')
 
     print('ready')
     
@@ -376,6 +380,134 @@ async def on_message(message):
         except NoSuchElementException:
             embed.add_field(name="캐릭터5", value="없음", inline=True)
 
+
+        await message.channel.send(embed=embed)
+        
+    if message.content.startswith('!귀검 검색'):
+        
+        msg = message.content.split()
+
+        Name = msg[2]
+
+        driver.switch_to_window(tabs[3])
+        driver.get('http://gss.skhidc.kr/ranking.php')
+        
+        search_box = driver.find_element_by_class_name('form-control')
+        search_box.send_keys(Name)
+        search_box.send_keys(Keys.RETURN)
+        
+        embed=discord.Embed(title=Name, color=0x00ff56)
+        try:
+            elem = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[1]/div/p[1]/font/strong')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[1]/div/p[1]/font/strong')
+                card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[1]/div/p[2]')
+                card1_data = card1.text
+                card2_data = card2.text
+                card = card1_data,card2_data
+                card = str(card)
+                card = card.replace("(", "")
+                card = card.replace("'", "")
+                card = card.replace("<", "")
+                card = card.replace(">", "")
+                card = card.replace(",", "")
+                card = card.replace(")", "")
+                embed.add_field(name="캐릭터1", value=card, inline=True)
+                embed.set_thumbnail(url=f"https://minotar.net/avatar/{Name}/100.png")
+
+            else:
+                embed.add_field(name="캐릭터1", value="없음", inline=True)
+        except NoSuchElementException:
+            embed.add_field(name="캐릭터1", value="없음", inline=True)
+        try:
+            elem = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[2]/div/p[1]/font/strong')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[2]/div/p[1]/font/strong')
+                card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[2]/div/p[2]')
+                card1_data = card1.text
+                card2_data = card2.text
+                card = card1_data,card2_data
+                card = str(card)
+                card = card.replace("(", "")
+                card = card.replace("'", "")
+                card = card.replace("<", "")
+                card = card.replace(">", "")
+                card = card.replace(",", "")
+                card = card.replace(")", "")
+                embed.add_field(name="캐릭터2", value=card, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터2", value="없음", inline=True)
+        except NoSuchElementException:
+            embed.add_field(name="캐릭터2", value="없음", inline=True)
+        try:
+            elem = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[3]/div/p[1]/font/strong')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[3]/div/p[1]/font/strong')
+                card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[3]/div/p[2]')
+                card1_data = card1.text
+                card2_data = card2.text
+                card = card1_data,card2_data
+                card = str(card)
+                card = card.replace("(", "")
+                card = card.replace("'", "")
+                card = card.replace("<", "")
+                card = card.replace(">", "")
+                card = card.replace(",", "")
+                card = card.replace(")", "")
+                embed.add_field(name="캐릭터3", value=card, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터3", value="없음", inline=False)
+        except NoSuchElementException:
+            embed.add_field(name="캐릭터3", value="없음", inline=False)
+        try:
+            elem = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[4]/div/p[1]/font/strong')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[4]/div/p[1]/font/strong')
+                card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[4]/div/p[2]')
+                card1_data = card1.text
+                card2_data = card2.text
+                card = card1_data,card2_data
+                card = str(card)
+                card = card.replace("(", "")
+                card = card.replace("'", "")
+                card = card.replace("<", "")
+                card = card.replace(">", "")
+                card = card.replace(",", "")
+                card = card.replace(")", "")
+                embed.add_field(name="캐릭터4", value=card, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터4", value="없음", inline=True)
+        except NoSuchElementException:
+            embed.add_field(name="캐릭터4", value="없음", inline=True)
+        try:
+            elem = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[5]/div/p[1]/font/strong')
+            if len(elem.text) >= 1:
+
+                card1 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[5]/div/p[1]/font/strong')
+                card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[5]/div/p[2]')
+                card1_data = card1.text
+                card2_data = card2.text
+                card = card1_data,card2_data
+                card = str(card)
+                card = card.replace("(", "")
+                card = card.replace("'", "")
+                card = card.replace("<", "")
+                card = card.replace(">", "")
+                card = card.replace(",", "")
+                card = card.replace(")", "")
+                embed.add_field(name="캐릭터5", value=card, inline=True)
+
+            else:
+                embed.add_field(name="캐릭터5", value="없음", inline=True)
+        except NoSuchElementException:
+            embed.add_field(name="캐릭터5", value="없음", inline=True)
 
         await message.channel.send(embed=embed)
 
