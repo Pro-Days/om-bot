@@ -155,7 +155,7 @@ async def on_message(message):
 
         await message.channel.send(embed=embed)
 
-        if message.content == "!드랍아이템":
+    if message.content == "!드랍아이템":
 
         embed=discord.Embed(title='드랍아이템', color=0x00ff56)
 
