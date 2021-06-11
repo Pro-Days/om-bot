@@ -16,7 +16,6 @@ from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
 import os
-import time
 @client.event
 async def on_ready():
     options = webdriver.ChromeOptions()
@@ -26,24 +25,7 @@ async def on_ready():
     global driver
     
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver.execute_script('window.open("about:blank", "_blank");')
-    driver.execute_script('window.open("about:blank", "_blank");')
-    driver.execute_script('window.open("about:blank", "_blank");')
-
-    global tabs
-    tabs = driver.window_handles
-
-    driver.switch_to.window(tabs[0])
     driver.get('http://om.skhidc.kr/')
-
-    driver.switch_to.window(tabs[1])
-    driver.get('https://skhlist.com/server/324')
-    
-    driver.switch_to.window(tabs[2])
-    driver.get('https://skhlist.com/server/79')
-    
-    driver.switch_to.window(tabs[3])
-    driver.get('http://gss.skhidc.kr')
 
     print('ready')
     
@@ -117,8 +99,7 @@ async def on_message(message):
 
         embed=discord.Embed(title='정보', color=0x00ff56)
 
-        driver.switch_to.window(tabs[1])
-        driver.refresh()
+        driver.get('https://skhlist.com/server/324')
 
         embed.add_field(name="이름", value='귀검', inline=True)
         embed.add_field(name="버전", value='1.15.2', inline=True)
@@ -141,8 +122,7 @@ async def on_message(message):
 
         embed=discord.Embed(title='정보', color=0x00ff56)
 
-        driver.switch_to.window(tabs[2])
-        driver.refresh()
+        driver.get('https://skhlist.com/server/79')
 
         embed.add_field(name="이름", value='일월', inline=True)
         embed.add_field(name="버전", value='1.12.2', inline=True)
@@ -157,9 +137,9 @@ async def on_message(message):
 
     if message.content == "!드랍아이템":
 
-        embed=discord.Embed(title='드랍아이템', color=0x00ff56)
+        embed=discord.Embed(title='', color=0x00ff56)
 
-        embed.add_field(name='', value="[링크](https://docs.google.com/spreadsheets/d/1ptOHHhR0sdQlc9NtuTvzep1IoliMmG0gnzSstB590Nk/edit#gid=0)", inline=False)
+        embed.add_field(name='드랍아이템', value="[링크](https://docs.google.com/spreadsheets/d/1ptOHHhR0sdQlc9NtuTvzep1IoliMmG0gnzSstB590Nk/edit#gid=0)", inline=False)
 
         await message.channel.send(embed=embed)
 
@@ -167,9 +147,12 @@ async def on_message(message):
 
         msg = message.content.split()
 
-        ranking1 = msg[2]
+        try:
+            ranking1 = msg[2]
+            page = msg[3]
 
-        page = msg[3]
+        except IndexError:
+            await message.channel.send('!귀검 랭킹 <이전 / 이후 > <페이지>')
 
         if ranking1 == "이전":
             ranking = "before"
@@ -183,46 +166,50 @@ async def on_message(message):
 
         info = ranking1+'랭킹'
 
-        driver.switch_to.window(tabs[3])
         driver.get('http://gss.skhidc.kr/ranking.php?type=' + ranking)
 
         embed=discord.Embed(title=info, color=0x00ff56)
 
-        page_1 = (int(page)-1)*10 + 1
+        try:
+            page_1 = (int(page)-1)*10 + 1
+
+        except ValueError:
+            await message.channel.send('!귀검 랭킹 <이전 / 이후 > <페이지>')
+            
         page_2 = int(page)*10 + 1
 
-        for i in range(page_1,page_2):
-            
+        if int(page) <= 0 or int(page) >= 11:
+            await message.channel.send('페이지는 1부터 10까지만 가능합니다.')
 
-            name = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[2]')
-            job = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[4]')
-            level = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[5]')
-            
-            name_data = name.text
-            job_data = job.text
-            level_data = level.text
-            
-            card = '닉네임: ' + name_data + '\n직업: ' + job_data + '\n레벨: ' + level_data
-            embed.add_field(name=i, value=card, inline=True)
+        else:
+            for i in range(page_1,page_2):
+                
 
-        await message.channel.send(embed=embed)
+                name = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[2]')
+                job = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[4]')
+                level = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[5]')
+                
+                name_data = name.text
+                job_data = job.text
+                level_data = level.text
+                
+                card = '닉네임: ' + name_data + '\n직업: ' + job_data + '\n레벨: ' + level_data
+                embed.add_field(name=i, value=card, inline=True)
+
+            await message.channel.send(embed=embed)
     
     if message.content.startswith('!일월 랭킹'):
 
-        ranking1 = message.content[7:9]
-        page1 = message.content[10:len(message.content)]
+        msg = message.content.split()
+
+        ranking1 = msg[2]
+        page1 = msg[3]
 
         try:
             page = int(page1)
 
         except ValueError:
             await message.channel.send('!일월 랭킹 <일반 / 기문 / 만렙> <페이지>')
-
-        else:
-            pass
-
-        finally:
-            pass
 
         if (page >= 1 and page <=10):
             page = str(page1)
@@ -261,7 +248,7 @@ async def on_message(message):
                     nickname = tds[1].text.strip()
                     job = tds[3].text.strip()
                     level = tds[4].text.strip()
-                    embed.add_field(name=ranking, value='닉네임: ' + nickname + ' | 직업: ' + job + ' | 레벨: ' + level, inline=False)
+                    embed.add_field(name=ranking, value='닉네임: ' + nickname + '\n직업: ' + job + '\n레벨: ' + level, inline=True)
                     
         except AttributeError:
             info = ranking1+'랭킹 '+page+' (기록없음)'
@@ -271,7 +258,9 @@ async def on_message(message):
     
     if message.content.startswith('!일월 괴영'):
 
-        season1 = message.content[7:8]
+        msg = message.content.split()
+
+        season1 = msg[2]
 
         try:
             season = int(season1)
@@ -285,7 +274,7 @@ async def on_message(message):
         finally:
             pass
                 
-        job1 = message.content[9:len(message.content)]
+        job1 = msg[3]
 
         if job1 == "검객":
             job = "swordman"
@@ -352,28 +341,17 @@ async def on_message(message):
 
     if message.content.startswith('!일월 검색'):
 
-        Name = message.content[7:len(message.content)]
+        msg = message.content.split()
 
-        driver.switch_to.window(tabs[0])
+        Name = msg[2]
 
-        try:
-            chrome = driver.find_element_by_xpath('//*[@id="myNavbar"]/ul/li[1]/a')
-            if len(chrome.text) >= 1:
-
-                search_box = driver.find_element_by_class_name('form-control')
-                search_box.send_keys(Name)
-                search_box.send_keys(Keys.RETURN)
-
-            else:
-                search_box = driver.find_element_by_class_name('form-control')
-                search_box.send_keys(Name)
-                search_box.send_keys(Keys.RETURN)
-
-        except NoSuchElementException:
-            search_box = driver.find_element_by_class_name('form-control')
-            search_box.send_keys(Name)
-            search_box.send_keys(Keys.RETURN)
+        driver.get('http://om.skhidc.kr/')
+        
+        search_box = driver.find_element_by_class_name('form-control')
+        search_box.send_keys(Name)
+        search_box.send_keys(Keys.RETURN)
         embed=discord.Embed(title=Name, color=0x00ff56)
+        
         try:
             elem = driver.find_element_by_xpath('/html/body/table/tbody/tr/th[1]/div')
             if len(elem.text) >= 1:
@@ -449,7 +427,6 @@ async def on_message(message):
 
         Name = msg[2]
 
-        driver.switch_to.window(tabs[3])
         driver.get('http://gss.skhidc.kr/ranking.php')
         
         search_box = driver.find_element_by_class_name('form-control')
@@ -465,14 +442,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[1]/div/p[2]')
                 card1_data = card1.text
                 card2_data = card2.text
-                card = card1_data,card2_data
-                card = str(card)
-                card = card.replace("(", "")
-                card = card.replace("'", "")
-                card = card.replace("<", "")
-                card = card.replace(">", "")
-                card = card.replace(",", "")
-                card = card.replace(")", "")
+                card = card1_data + card2_data
                 embed.add_field(name="캐릭터1", value=card, inline=True)
                 embed.set_thumbnail(url=f"https://minotar.net/avatar/{Name}/100.png")
 
@@ -488,14 +458,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[2]/div/p[2]')
                 card1_data = card1.text
                 card2_data = card2.text
-                card = card1_data,card2_data
-                card = str(card)
-                card = card.replace("(", "")
-                card = card.replace("'", "")
-                card = card.replace("<", "")
-                card = card.replace(">", "")
-                card = card.replace(",", "")
-                card = card.replace(")", "")
+                card = card1_data + card2_data
                 embed.add_field(name="캐릭터2", value=card, inline=True)
 
             else:
@@ -510,14 +473,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[3]/div/p[2]')
                 card1_data = card1.text
                 card2_data = card2.text
-                card = card1_data,card2_data
-                card = str(card)
-                card = card.replace("(", "")
-                card = card.replace("'", "")
-                card = card.replace("<", "")
-                card = card.replace(">", "")
-                card = card.replace(",", "")
-                card = card.replace(")", "")
+                card = card1_data + card2_data
                 embed.add_field(name="캐릭터3", value=card, inline=True)
 
             else:
@@ -532,14 +488,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[4]/div/p[2]')
                 card1_data = card1.text
                 card2_data = card2.text
-                card = card1_data,card2_data
-                card = str(card)
-                card = card.replace("(", "")
-                card = card.replace("'", "")
-                card = card.replace("<", "")
-                card = card.replace(">", "")
-                card = card.replace(",", "")
-                card = card.replace(")", "")
+                card = card1_data + card2_data
                 embed.add_field(name="캐릭터4", value=card, inline=True)
 
             else:
@@ -554,14 +503,7 @@ async def on_message(message):
                 card2 = driver.find_element_by_xpath('//*[@id="table"]/table/tbody/tr/td[5]/div/p[2]')
                 card1_data = card1.text
                 card2_data = card2.text
-                card = card1_data,card2_data
-                card = str(card)
-                card = card.replace("(", "")
-                card = card.replace("'", "")
-                card = card.replace("<", "")
-                card = card.replace(">", "")
-                card = card.replace(",", "")
-                card = card.replace(")", "")
+                card = card1_data + card2_data
                 embed.add_field(name="캐릭터5", value=card, inline=True)
 
             else:
