@@ -15,7 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
-from selenium.common.exceptions import TimeoutException
+from selenium.common.exceptions import NoSuchElementException
 import os
 @client.event
 async def on_ready():
@@ -26,11 +26,8 @@ async def on_ready():
     global driver
     
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    try:
-        driver.get('http://gss.skhidc.kr/')
-    except TimeoutException as ex:
-        print(ex.Message)
-        Driver.navigate().refresh()
+    
+    driver.get('http://gss.skhidc.kr/')
 
     print('ready')
     
@@ -157,7 +154,7 @@ async def on_message(message):
             page = msg[3]
 
         except IndexError:
-            await message.channel.send('!귀검 랭킹 <이전 / 이후 > <페이지>')
+            await message.channel.send('!귀검 랭킹 <이전 / 이후 / 문파 > <페이지>')
 
         if ranking1 == "이전":
             ranking = "before"
@@ -165,41 +162,79 @@ async def on_message(message):
         elif ranking1 == "이후":
             ranking = "after"
 
+        elif ranking1 == "문파":
+            pass
+
         else:
-            ranking = "이 후"
+            ranking = "이후"
             ranking = "after"
 
-        info = ranking1+'랭킹'
-
-        driver.get('http://gss.skhidc.kr/ranking.php?type=' + ranking)
-
-        embed=discord.Embed(title=info, color=0x00ff56)
-
-        try:
-            page_1 = (int(page)-1)*10 + 1
-
-        except ValueError:
-            await message.channel.send('!귀검 랭킹 <이전 / 이후 > <페이지>')
+        if ranking1 == "이전" or ranking1 == "이후":
             
-        page_2 = int(page)*10 + 1
+            info = ranking1+'랭킹'
 
-        if int(page) <= 0 or int(page) >= 11:
-            await message.channel.send('페이지는 1부터 10까지만 가능합니다.')
+            driver.get('http://gss.skhidc.kr/ranking.php?type=' + ranking)
 
-        else:
-            for i in range(page_1,page_2):
-                
+            embed=discord.Embed(title=info, color=0x00ff56)
 
-                name = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[2]')
-                job = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[4]')
-                level = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[5]')
+            try:
+                page_1 = (int(page)-1)*10 + 1
+
+            except ValueError:
+                await message.channel.send('!귀검 랭킹 <이전 / 이후 / 문파 > <페이지>')
                 
-                name_data = name.text
-                job_data = job.text
-                level_data = level.text
+            page_2 = int(page)*10 + 1
+
+            if int(page) <= 0 or int(page) >= 11:
+                await message.channel.send('페이지는 1부터 10까지만 가능합니다.')
+
+            else:
+                for i in range(page_1,page_2):
+                    
+
+                    name = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[2]')
+                    job = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[4]')
+                    level = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[5]')
+                    
+                    name_data = name.text
+                    job_data = job.text
+                    level_data = level.text
+                    
+                    card = '닉네임: ' + name_data + '\n직업: ' + job_data + '\n레벨: ' + level_data
+                    embed.add_field(name=i, value=card, inline=True)
+
+                await message.channel.send(embed=embed)
+
+        if ranking1 == "문파":
+
+            info = "문파랭킹"
+
+            driver.get('http://gss.skhidc.kr/guild.php')
+
+            embed=discord.Embed(title=info, color=0x00ff56)
+
+            try:
+                page_1 = (int(page)-1)*10 + 1
+
+            except ValueError:
+                await message.channel.send('!귀검 랭킹 <이전 / 이후 / 문파 > <페이지>')
                 
-                card = '닉네임: ' + name_data + '\n직업: ' + job_data + '\n레벨: ' + level_data
-                embed.add_field(name=i, value=card, inline=True)
+            page_2 = int(page)*10 + 1
+
+            try:
+                for i in range(page_1,page_2):
+
+                    name = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[2]')
+                    level = driver.find_element_by_xpath(f'//*[@id="table"]/div/table/tbody/tr[{i}]/td[3]')
+                            
+                    name_data = name.text
+                    level_data = level.text
+                            
+                    card = '문파명: ' + name_data + '\n레벨: ' + level_data
+                    embed.add_field(name=i, value=card, inline=True)
+
+            except NoSuchElementException:
+                pass
 
             await message.channel.send(embed=embed)
     
