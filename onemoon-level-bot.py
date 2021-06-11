@@ -15,6 +15,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.common.exceptions import NoSuchElementException
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.remote.webelement import WebElement
+from selenium.common.exceptions import TimeoutException
 import os
 @client.event
 async def on_ready():
@@ -25,7 +26,11 @@ async def on_ready():
     global driver
     
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver.get('http://gss.skhidc.kr/')
+    try:
+        driver.get('http://gss.skhidc.kr/')
+    except TimeoutException as ex:
+        print(ex.Message)
+        Driver.navigate().refresh()
 
     print('ready')
     
