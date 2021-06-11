@@ -25,7 +25,7 @@ async def on_ready():
     global driver
     
     driver = webdriver.Chrome(executable_path='/app/.chromedriver/bin/chromedriver', options=options)
-    driver.get('http://om.skhidc.kr/')
+    driver.get('http://gss.skhidc.kr/')
 
     print('ready')
     
